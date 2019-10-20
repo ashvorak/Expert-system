@@ -1,0 +1,48 @@
+@@grammar::EXPERT
+@@eol_comments :: /[\t\r ]*#.*$/
+
+all =
+    {line_rule}*
+    {line_init}*
+    {line_query}*
+    $;
+
+line_rule =  {eol}*   @:rule eol;
+line_init =  {eol}*ws @:init eol;
+line_query = {eol}*ws @:query {eol}*;
+
+eol = '\n';
+
+# ---------------------
+init  = '='@:{fact}*;
+query = '?'@:{fact}+;
+
+# ---------------------
+rule = expr '=>' expr;
+
+# ---------------------
+expr = Xor | item2;
+Xor  = item2 {xorJoin}+;
+xorJoin = '^' @:item2;
+
+# ---------------------
+item2 = Or | item1;
+Or  = item1 {orJoin}+;
+orJoin = '|' @:item1;
+
+# ---------------------
+item1 = And | term;
+And = term {andJoin}+;
+andJoin = '+' @:term;
+
+# ---------------------
+term = Not | basic;
+Not = ws'!' @:basic;
+
+# ---------------------
+basic = ws'(' ~ @:expr ')'ws | fact;
+fact = ws @:var ws;
+var = /[A-Z]/;
+
+# ---------------------
+ws = /[\t\r ]*/;

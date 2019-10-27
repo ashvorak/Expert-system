@@ -7,9 +7,9 @@ all =
     {line_query}*
     $;
 
-line_rule =  {eol}*   @:rule eol;
-line_init =  {eol}*ws @:init eol;
-line_query = {eol}*ws @:query {eol}*;
+line_rule =  {eol}*@:rule eol;
+line_init =  {eol} @:init eol;
+line_query = {eol} @:query {eol}*;
 
 eol = '\n';
 

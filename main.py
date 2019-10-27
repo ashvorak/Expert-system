@@ -1,9 +1,9 @@
 import sys
 from parser import Parser
 
-GRAMMAR = 'rules_to_parse.peg'
+GRAMMAR = 'rules_to_parse2.peg'
 
-class ExpertSystem:
+class Expert:
     def __init__(self):
         self.parser = Parser()
         self.rules = None
@@ -37,7 +37,7 @@ def main():
     except Exception:
         print('Error')
 
-    ExpertSystem().Run(sys.argv[1])
+    Expert().Run(sys.argv[1])
 
 
 if __name__ == '__main__':

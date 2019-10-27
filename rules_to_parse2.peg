@@ -1,0 +1,34 @@
+@@grammar::CALC
+@@whitespace :: /[\t\n ]+/
+@@ignorecase :: True
+@@comments :: /\(\*.*?\*\)/
+@@eol_comments :: /#.*?$/
+
+start = {rule}
+        {initial}
+        {queries}
+        $ ;
+
+rule = expression '=>' expression;
+
+expression
+    =
+    | expression '|' factor
+    | expression '+' factor
+    | expression '^' factor
+    | factor
+    ;
+
+factor
+    =
+    | '(' @:expression ')'
+    | condition
+    ;
+
+initial = '='@:{symbol}*;
+
+queries = '?'@:{symbol}+;
+
+symbol = /[A-Z]/;
+
+condition = /\!?/@:symbol//;

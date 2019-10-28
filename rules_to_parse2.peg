@@ -9,7 +9,7 @@ start = {rule}
         {queries}
         $ ;
 
-rule = expression '=>' expression;
+rule = expression '=>' condition;
 
 expression
     =
@@ -31,4 +31,4 @@ queries = '?'@:{symbol}+;
 
 symbol = /[A-Z]/;
 
-condition = /\!?/@:symbol//;
+condition = /\!?[A-Z]/;

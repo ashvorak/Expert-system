@@ -1,10 +1,10 @@
-B => A
+B + J + L + !M => A
 D + !E => B
 G + H | X => F
 I + J => !G
 G => H
 L + M => K
-O + P => L + N
+O + P => L
 N => M
 
 =DEIJP

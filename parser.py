@@ -1,7 +1,8 @@
 import tatsu
 import pprint
 
-def check_result(self, result):
+
+def check_result(result):
     if result[0] == []:
         raise Exception("You missed rules!")
 
@@ -16,6 +17,7 @@ def check_result(self, result):
 
     elif len(result[2]) > 1:
         raise Exception("You passed more than one query block!")
+
 
 class Parser:
 
@@ -41,7 +43,7 @@ class Parser:
         # self.check_result(ast)
 
         #delete
-        print('# PPRINT')
-        pprint.pprint(ast, indent=2, width=20)
+        # print('# PPRINT')
+        # pprint.pprint(ast, indent=2, width=20)
 
         return ast

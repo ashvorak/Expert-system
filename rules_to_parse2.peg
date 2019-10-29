@@ -9,13 +9,18 @@ start = {rule}
         {queries}
         $ ;
 
-rule = expression '=>' condition;
+rule = expression '=>' expression;
 
 expression
     =
-    | expression '|' factor
-    | expression '+' factor
-    | expression '^' factor
+    | expression '|' term
+    | expression '^' term
+    | term
+    ;
+
+term
+    =
+    | term '+' factor
     | factor
     ;
 

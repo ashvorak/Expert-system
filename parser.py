@@ -1,32 +1,42 @@
 import tatsu
-import pprint
+import enum
 
 
-def check_result(result):
+class Errors(enum.Enum):
+   NoRules = 'No rules'
+   NoQueries = 'No queries'
+   NoInitFacts = 'No initial line'
+   InitTooMuch = 'You need only 1 init line'
+   QueryTooMuch = 'You need only 1 query line'
+   CantRead = 'Cant read the file'
+
+
+def error_management(result):
     if result[0] == []:
-        raise Exception("You missed rules!")
+        raise Exception(Errors.NoRules.value)
 
     if result[1] == []:
-        raise Exception("You missed initial facts!")
+        raise Exception(Errors.NoInitFacts.value)
 
     elif len(result[1]) > 1:
-        raise Exception("You passed more than one initial facts block!")
+        raise Exception(Errors.InitTooMuch.value)
 
     if result[2] == []:
-        raise Exception("You missed query!")
+        raise Exception(Errors.NoQueries.value)
 
     elif len(result[2]) > 1:
-        raise Exception("You passed more than one query block!")
+        raise Exception(Errors.QueryTooMuch.value)
 
 
 class Parser:
 
     def read_file(self, file_name):
+        data = ''
         try:
             with open(file_name) as file:
                 data = file.read()
         except:
-            print('Could not open file.log')
+            (Errors.CantRead.value)
 
         return data
 
@@ -40,10 +50,6 @@ class Parser:
         parser = self.compile(grammar)
         ast = parser.parse(input_data)
 
-        # self.check_result(ast)
-
-        #delete
-        # print('# PPRINT')
-        # pprint.pprint(ast, indent=2, width=20)
+        error_management(ast)
 
         return ast

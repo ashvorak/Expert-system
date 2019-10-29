@@ -1,96 +1,7 @@
 import sys
 from parser import Parser
 
-GRAMMAR = 'rules_to_parse2.peg'
-
-
-class Expert:
-    def __init__(self):
-        self.parser = Parser()
-        self.rules = None
-        self.trues = None
-        self.search = None
-        self.knowledge_base = None
-        self.results = []
-
-    def check_right_part(self, rules):
-        result = list()
-        for rule in rules:
-            if isinstance(rule[-1], list):
-                value = rule[:-1]
-                parts = ''.join(rule[-1]).split('+')
-                for part in parts:
-                    result.append(value + list(part))
-            else:
-                result.append(rule)
-        return result
-
-    def convert_rules(self, rules):
-        tmp = dict()
-        rules = self.check_right_part(rules)
-        for rule in rules:
-            if isinstance(rule[-1], list):
-                fact = ''.join(rule[-1])
-            else:
-                fact = rule[-1]
-            if tmp.get(fact):
-                value = tmp[fact]
-                tmp[fact] = [list(value), list(rule[:-2])]
-            else:
-                tmp[fact] = rule[:-2]
-
-        return tmp
-
-    def parse_file(self, file):
-        parser_output = self.parser.parse(file, GRAMMAR)
-
-        if parser_output is None:
-            exit('Something wrong with file!')
-
-        if parser_output != 'empty':
-            self.rules = self.convert_rules(parser_output[0])
-            self.trues = parser_output[1][0]
-            self.search = parser_output[2][0]
-
-        else:
-            exit('Wrong file content or file is empty!')
-
-    def run(self, file):
-        self.parse_file(file)
-        # for rule in self.rules:
-        print(self.rules)
-
-        print(self.trues)
-        print(self.search)
-        res = create_classes(self.rules)
-
-        for item in self.search:
-            if item in self.trues:
-                print(f'{item} in trues = True')
-            elif res.get(item):
-                if isinstance(res[item], list) and len(res[item]) > 1 and \
-                        all([True if not isinstance(i, str) else False for i in res[item]]):
-                    for i in res[item]:
-                        fact = i.calculate(self.trues, res)
-                        if fact:
-                            break
-                else:
-                    fact = res[item].calculate(self.trues, res)
-                print(f'{item} in calculation = {fact}')
-            else:
-                print(f'{item} in else = False')
-
-    #
-    # for item in self.search:
-    #     for rule in self.rules.keys():
-    #         if rule.get(item):
-    #             pass
-    # self.calculate(rule[item])
-
-    #
-    # def calculate(self):
-    #     for item in self.search:
-    #         for rule in self.rules:
+GRAMMAR = 'grammar.peg'
 
 
 def check_negative_elem(elem):
@@ -158,11 +69,6 @@ class And:
     def __repr__(self):
         return f'{self.left.__repr__()} + {self.right.__repr__()}'
 
-    #
-    # def define_bool(self):
-    #     if self.left.element in self.trues:
-    #         self.left_bool =
-
     def calculate(self, trues, res):
         return self.left.calculate(trues, res) and self.right.calculate(trues, res)
 
@@ -206,6 +112,86 @@ class Not:
         else:
             res = False
         return not res
+
+
+class Expert:
+    def __init__(self):
+        self.parser = Parser()
+        self.rules = None
+        self.trues = None
+        self.search = None
+        self.knowledge_base = None
+        self.results = []
+
+    def check_right_part(self, rules):
+        result = list()
+        for rule in rules:
+            if isinstance(rule[-1], list):
+                value = rule[:-1]
+                parts = ''.join(rule[-1]).split('+')
+                for part in parts:
+                    result.append(value + list(part))
+            else:
+                result.append(rule)
+        return result
+
+    def convert_rules(self, rules):
+        tmp = dict()
+        rules = self.check_right_part(rules)
+        for rule in rules:
+            if isinstance(rule[-1], list):
+                fact = ''.join(rule[-1])
+            else:
+                fact = rule[-1]
+            if tmp.get(fact):
+                value = tmp[fact]
+                tmp[fact] = [list(value), list(rule[:-2])]
+            else:
+                tmp[fact] = rule[:-2]
+
+        return tmp
+
+    def parse_file(self, file):
+        parser_output = self.parser.parse(file, GRAMMAR)
+
+        if parser_output is None:
+            exit('Something wrong with file!')
+
+        if parser_output != 'empty':
+            self.rules = self.convert_rules(parser_output[0])
+            self.trues = parser_output[1][0]
+            self.search = parser_output[2][0]
+
+        else:
+            exit('Wrong file content or file is empty!')
+
+    def run(self, file):
+        try:
+            self.parse_file(file)
+
+            # print(self.rules)
+            # print(self.trues)
+            # print(self.search)
+
+            res = create_classes(self.rules)
+
+            for item in self.search:
+                if item in self.trues:
+                    print(f'{item} = True')
+                elif res.get(item):
+                    if isinstance(res[item], list) and len(res[item]) > 1 and \
+                            all([True if not isinstance(i, str) else False for i in res[item]]):
+                        for i in res[item]:
+                            fact = i.calculate(self.trues, res)
+                            if fact:
+                                break
+                    else:
+                        fact = res[item].calculate(self.trues, res)
+                    print(f'{item} = {fact}')
+                else:
+                    print(f'{item} = False')
+        except Exception as e:
+            exit(e)
 
 
 def main():

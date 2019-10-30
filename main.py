@@ -133,7 +133,7 @@ class Expert:
         for rule in rules:
             if isinstance(rule[-1], list):
                 value = rule[:-1]
-                parts = ''.join(list(flatten(rule[:-1]))).split('+')
+                parts = ''.join(list(flatten(rule[-1]))).split('+')
                 for part in parts:
                     result.append(value + list(part))
             else:

@@ -4,7 +4,7 @@ G + H => F
 I + J => G
 G => H
 L + M => K
-O + P => L | N
+O + P => L + N
 N => M
 
 =DEIJOP

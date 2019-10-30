@@ -2,6 +2,7 @@ import sys
 from parser import Parser
 
 GRAMMAR = 'grammar.peg'
+USAGE = 'python3.6 main.py test_file.txt'
 
 
 def check_negative_elem(elem):
@@ -125,10 +126,14 @@ class Expert:
 
     def check_right_part(self, rules):
         result = list()
+
+        flatten = lambda *n: (e for a in n
+                              for e in (flatten(*a) if isinstance(a, (tuple, list)) else (a,)))
+
         for rule in rules:
             if isinstance(rule[-1], list):
                 value = rule[:-1]
-                parts = ''.join(rule[-1]).split('+')
+                parts = ''.join(list(flatten(rule[:-1]))).split('+')
                 for part in parts:
                     result.append(value + list(part))
             else:
@@ -169,10 +174,6 @@ class Expert:
         try:
             self.parse_file(file)
 
-            # print(self.rules)
-            # print(self.trues)
-            # print(self.search)
-
             res = create_classes(self.rules)
 
             for item in self.search:
@@ -197,7 +198,10 @@ class Expert:
 def main():
     try:
         if len(sys.argv) == 1:
-            exit('There is no input arguments! Type -h argument to read help for this program!')
+            exit('There is no input arguments!' + '\n' + USAGE)
+
+        elif len(sys.argv) > 2:
+            exit('Too many arguments!' + '\n' + USAGE)
 
     except Exception:
         print('Error')
